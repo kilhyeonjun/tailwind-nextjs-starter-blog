@@ -1,0 +1,197 @@
+---
+title: 메일링 시스템의 이메일 발송 결과 수신 기능 도입
+date: 2024-03-19 00:00:00
+tags: ['aws', 'ses']
+draft: false
+summary: 사내 메일링 시스템에 새롭게 추가된 이메일 발송 결과 수신 기능에 대해 소개합니다. 이메일 전송 과정에서 발생할 수 있는 문제를 추적하고 진단하는 데 있어 이 기능이 얼마나 중요한지, 그리고 우리 이메일 서비스에 미친 긍정적인 영향에 이야기 해보고자 합니다.
+---
+
+원본 : [메일링 시스템의 이메일 발송 결과 수신 기능 도입](https://jnp.tech/posts/2024-03-aws-ses-event-log)
+
+메일링 시스템의 이메일 발송 결과 수신 기능 도입에 대하여
+안녕하세요, JNPMEDI Dev2 팀의 Docs Squad에서 Software Engineer로 근무하고 있는 길현준이라고 합니다.
+
+오늘은 사내 메일링 시스템의 신규 기능 도입에 대해 이야기해보고자 합니다. 제품 개발 과정에서 마주친 도전들과 이를 어떻게 해결했는지, 그리고 이 과정에서 얻은 소중한 교훈에 대해 공유하고자 합니다.
+
+# 1. 도입 배경
+
+---
+
+"이메일이 왜 안 왔지?" 우리 회사에서 종종 듣던 말이었습니다. 특히 JNPMEDI의 제품군 중 문서 관리 및 전자서명 기능을 갖추고 있는 Maven Docs라는 제품이 있습니다. 이 제품을 통해 전자서명을 요청하게 되면 서명자에게 서명요청에 대한 알림 이메일을 발송하게 되는데, 이런 중요한 이메일들이 간혹 누락되는 상황이 발생했습니다. 기존 시스템에서는 발송 요청 성공 여부만 확인할 수 있었고, 어떠한 사유로 인해 이메일 발송이 안 되었는지 알 길이 없었습니다.
+또한 사내 메일링 시스템은 AWS의 Simple Email Service(SES)를 사용하여 이메일을 발송하는데 SES 콘솔은 발송 건수, bounce, complaint와 같은 통계적 정보만 제공하였으며 개별 이메일의 정보는 확인 할 수 없었습니다.
+
+이런 문제를 해결하기 위해, 우리는 메일링 시스템의 이메일 발송 결과 수신 기능을 도입하기로 했습니다. 이메일 발송 결과 수신 기능이 도입 완료된다면 이메일 발송 과정에서 발생하는 모든 이벤트를 한눈에 확인하고, 문제에 신속하게 대응하여 해결하는 효과를 갖고 올 것입니다.
+
+# 2. 기술적 세부 사항
+
+---
+
+AWS SES에는 이메일 발송 결과를 이벤트 형태로 받을 수 있는 기능이 있습니다. 이를 통해 우리는 개별 이메일의 상태와 과정을 자세히 파악할 수 있게 될 겁니다.
+
+## 2.1. AWS Simple Email Service(SES) 란?
+
+- [관련 링크](https://docs.aws.amazon.com/ko_kr/ses/latest/dg/Welcome.html)
+
+AWS SES에 대해 간략하게 설명하고 가자면 클라우드 기반의 이메일 발송 서비스로, 대량 이메일 발송과 트랜잭션 이메일 처리를 지원합니다. 뛰어난 전송 성능과 보안 기능을 제공하며, 대규모 이메일 캠페인을 관리할 수 있도록 돕습니다.
+
+### 2.2. 이메일 발송 실패 Case
+
+이메일 발송 실패는 다양한 이유로 발생할 수 있지만, 주로 발생하는 몇 가지 사례를 정리하면 다음과 같습니다.
+
+- Bounce: 수신자의 메일 서버가 이메일을 받아들이지 않고 되돌려 보내는 경우
+  - Hard bounce: 영구적인 이유로 이메일이 반송되는 경우 (예: 존재하지 않는 이메일 주소)
+  - Soft bounce: 일시적인 문제로 인해 이메일이 반송되는 경우 (예: 수신자 메일함이 가득 찬 상황)
+- Complaint: 수신자가 이메일을 스팸으로 신고하는 경우
+
+이 외의 이메일 발송 실패 사례는 AWS SES 관련 문서나 아래 링크에서 더욱 자세히 알아볼 수 있습니다.
+
+- [Amazon SES and deliverability](https://docs.aws.amazon.com/ses/latest/dg/send-email-concepts-deliverability.html)
+
+### 2.3. AWS SES 발송 결과 이벤트 수신 방법
+
+AWS SES(Simple Email Service)를 사용할 때, 발송 결과에 대한 이벤트를 수신하는 방법은 크게 두 가지가 있습니다. 이 두 가지 방법을 통해 이메일 발송 과정에서 발생하는 이벤트를 추적하고, 이를 통해 이메일의 전송 상태와 성공 여부를 확인할 수 있습니다.
+[Amazon SES에 대한 이벤트 알림 설정](https://docs.aws.amazon.com/ses/latest/dg/monitor-sending-activity-using-notifications.html)
+
+1. 이메일을 통한 알림
+
+- AWS SES는 이메일을 통해 발송 결과에 대한 알림을 제공합니다. 이 방법은 간단하게 설정할 수 있으며, 주로 소규모나 단순한 이메일 전송 시스템에 적합합니다. 이메일을 통한 알림을 설정하면, 발송 실패, 배달 성공, 거부 등의 다양한 이메일 이벤트에 대한 정보를 받을 수 있습니다. 자세한 설정 방법은 [이메일을 통한 알림 설정 문서](https://docs.aws.amazon.com/ko_kr/ses/latest/dg/monitor-sending-activity-using-notifications-email.html)에서 확인할 수 있습니다.
+
+2. Amazon SNS를 통한 알림
+
+- AWS SES는 Amazon Simple Notification Service(SNS)를 사용하여 보다 상세한 이벤트 알림을 제공합니다. 이 방법은 이메일 발송과 관련된 데이터를 더 넓은 범위로 모니터링하고, 분석하기 위해 사용됩니다. Amazon SNS를 사용하면, 발송 결과뿐만 아니라 클릭, 오픈, 거부 등과 같은 보다 상세한 이벤트 정보를 받을 수 있으며, 이 정보를 다른 시스템과 연동하여 사용할 수 있습니다. Amazon SNS를 사용한 알림 설정에 대한 자세한 정보는 [SNS를 통한 알림 설정 문서](https://docs.aws.amazon.com/ko_kr/ses/latest/dg/monitor-sending-activity-using-notifications-sns.html)에서 찾아볼 수 있습니다.
+
+두 가지 방법 중 IaC 관리가 가능하며 더 많은 이벤트를 수신할 수 있고, 다른 시스템과 연동도 가능한 SNS를 통한 방법으로 진행해 보았습니다.
+
+### 3. 이벤트 게시 설정
+
+---
+
+- [관련 링크](https://docs.aws.amazon.com/ses/latest/dg/monitor-sending-using-event-publishing-setup.html)
+
+저희는 AWS 이벤트 대상을 AWS SNS으로 설정하였고, 이를 예시로 설명 드리겠습니다. AWS SNS로 진행할 경우 우선 SNS Topic을 생성해 줘야 합니다.
+
+- 이벤트 알림을 위한 SNS 토픽을 설정합니다.
+- AWS SNS에 대해 알고 싶으시다면 저희 기술 블로그의
+  [Serverless Event Driven Architecture 2 - Event Pipeline](https://jnp.tech/posts/2023-10-serverless-event-driven-architecture-2) 포스트를 읽어주세요!
+
+이후 AWS SES의 이벤트 게시를 설정하기 위해선 아래의 3가지 단계를 진행해야 합니다.
+
+1. [구성 세트 생성](https://docs.aws.amazon.com/ses/latest/dg/event-publishing-create-configuration-set.html)
+
+- 이메일 전송과 관련된 데이터를 수집하고 관리할 수 있는 구성 세트를 만듭니다. 구성 세트는 다양한 이메일 발송 이벤트를 추적하는 데 필요한 설정을 포함합니다.
+
+2.  [이벤트 대상 추가](https://docs.aws.amazon.com/ses/latest/dg/event-publishing-add-event-destination-sns.html)
+
+- 구성 세트에 이벤트 대상을 추가합니다. 예를 들어, Amazon SNS를 이벤트 대상으로 설정하여 이메일 발송 상태에 대한 알림을 받을 수 있습니다.
+
+3.  [메일 전송 시 구성 세트 지정](https://docs.aws.amazon.com/ses/latest/dg/event-publishing-send-email.html)
+
+- 실제 이메일을 발송할 때, 이전에 생성한 구성 세트를 지정합니다. 이렇게 하면, 설정한 이벤트 대상을 통해 이메일 발송 상태에 대한 정보를 수집할 수 있습니다.
+
+이제 AWS Console과 laC에서 각각의 단계 진행 방법을 설명 해드리겠습니다.
+
+#### 3.1.1 구성 세트 생성 (AWS Console)
+
+1. Amazon SES 콘솔에 로그인합니다.
+2. 왼쪽 탐색 창에서 구성 아래의 구성 세트(Configuration sets)를 클릭합니다.
+3. 세트 생성(Create Set)을 클릭합니다.
+   ![ses create configuration 1](/static/images/aws/ses/ses_create_configuration_set_1.png)
+4. 구성 세트 이름을 입력하고 세트 생성(Create set)을 클릭합니다.
+   ![ses create configuration set 2](/static/images/aws/ses/ses_create_configuration_set_2.png)
+
+#### 3.1.2. 이벤트 대상 추가 (AWS Console)
+
+1. 생성한 구성 세트로 이동하여 이벤트 대상(Event destinations)을 클릭한 다음, 대상 추가(Add destination)를 클릭합니다.
+   ![ses add event destination 1](/static/images/aws/ses/ses_add_event_destination_1.png)
+2. 이벤트 대상을 설정합니다. 저희는 AWS SNS를 예로 들었으니 AWS SNS를 선택합니다.
+3. 이벤트 수신시 발행할 SNS 토픽을 선택하고 다음 단계로 이동한 후, 대상 추가(Add destination)를 클릭하여 이벤트 대상을 추가합니다.
+   ![ses add event destination 2](/static/images/aws/ses/ses_add_event_destination_2.png)
+
+#### 3.2.1. 구성 세트 생성 (IaC)
+
+-이번에는 사내에서 사용한 IaC 방식을 소개하겠습니다. 저희는 Node.js 기반의 서버리스 환경에서 개발을 진행하고 있으며, Serverless 프레임워크를 통해 인프라를 구축하고 있습니다. Serverless 프레임워크에 대한 자세한 내용은 [이 문서](https://www.serverless.com/framework/docs/)를 참고하시면 도움이 될 것입니다.
+
+```yml
+# serverless.yml
+
+service: mailing
+provider: aws
+
+resources: # CloudFormation template syntax
+  Resources:
+    ConfigSet:
+      Type: 'AWS::SES::ConfigurationSet'
+      Properties:
+        Name: <configuration set name>
+```
+
+- 위 구문을 통해 구성 세트를 설정할 수 있습니다.
+
+#### 3.2.2. 이벤트 대상 추가 (IaC)
+
+![ses iac error](/static/images/aws/ses/ses-iac-error.png)
+
+- 이벤트 대상을 추가하기 위해 AWS::SES::ConfigurationSetEventDestination을 사용할 계획이었으나, EventDestination의 kinesisFirehoseDestination 파라미터가 선택 사항임에도 불구하고 null 오류가 발생했습니다. 이 문제를 해결하기 위해 SNS Topic으로 이벤트 대상을 추가해주는 [serverless-ses-sns](https://github.com/Advanon/serverless-ses-sns) 플러그인을 발견하고 이를 사용하기로 했습니다.
+
+```yml
+plugins:
+  - serverless-ses-sns
+
+custom:
+  snsDestination:
+    region: <region> # If absent, self:provider.region will be used
+    configurationSet: <configuration set name>
+    topicArn: <topic arn> # If absent, one will be created
+    events: # One or more of the following
+      - renderingFailure
+      - reject
+      - bounce
+      - send
+      - complaint
+      - delivery
+      - open
+      - click
+```
+
+- 위 구문을 통해 이벤트 대상자를 설정할 수 있습니다.
+
+### 3.3. 메일 전송 테스트
+
+- [관련 링크](https://docs.aws.amazon.com/ko_kr/ses/latest/dg/send-an-email-from-console.html)
+
+이메일 전송의 성공, 실패, 거부 상황을 시뮬레이션하기 위해, 메일 전송 테스트를 진행했습니다. 특히, slack webhook을 활용하여 이메일 발송 실패나 거부 시 즉각적인 메시지 알림을 받을 수 있도록 구성했습니다.
+
+- 테스트 메일
+  ![simulation email](/static/images/aws/ses/simulation_email.png)
+
+- slack 메시지
+  ![simulation slack](/static/images/aws/ses/simulation_slack.png)
+
+실제 테스트를 통해, 이메일 발송 성공, 실패, 거부 상황을 직접 확인하고, 각 상황에 대응하는 방법을 테스트해볼 수 있었습니다.
+
+# 4. 마무리
+
+---
+
+이제 이메일 문제가 생기면, 슬랙 알림을 통해 즉시 알 수 있고, 로그를 분석하여 그 원인을 파악할 수 있게 되었습니다. 이전에는 이메일이 제대로 도착하지 않았다는 소식을 들을 때마다 원인을 찾기 위해 애썼는데, 이제는 그런 문제들을 더 쉽고 빠르게 해결할 수 있게 되어 기쁩니다.
+
+현재는 슬랙 메시지가 완벽하게 다듬어지지 않아, 발송 실패의 구체적인 이유를 모두 보여주지는 못합니다. 하지만 이 부분을 개선하면, 더욱 효율적이고 강력한 시스템을 구축할 수 있을 것입니다. 이러한 개선을 통해 더 나은 서비스를 제공하고자 하는 개인적인 목표가 있습니다.
+
+이번 경험을 공유하게 되어 기쁘며 이 글이 도움이 되었다면 좋겠습니다. 이번 글을 마무리하겠습니다. 감사합니다!
+
+---
+
+사용한 Github Repo
+
+- [serverless github repository](https://github.com/serverless/serverless)
+- [serverless-ses-sns github repository](https://www.npmjs.com/package/serverless-ses-sns)
+
+참조하면 유용한 링크
+
+- [NodeMailer Document](https://www.nodemailer.com/)
+- [NodeMailer SES ConfigurationSet issue](https://github.com/nodemailer/nodemailer/issues/1155)
+- [AWS Simple Email Service(SES) 란?](https://docs.aws.amazon.com/ko_kr/ses/latest/dg/Welcome.html)
+- [Amazon SES and deliverability](https://docs.aws.amazon.com/ses/latest/dg/send-email-concepts-deliverability.html)
+- [Amazon SES에 대한 이벤트 알림 설정](https://docs.aws.amazon.com/ses/latest/dg/monitor-sending-activity-using-notifications.html)
+- [Amazon SES – 반송 및 수신 거부에 대한 알림 설정](https://aws.amazon.com/ko/blogs/messaging-and-targeting/amazon-ses-set-up-notifications-for-bounces-and-complaints/)
+- [AWS CloudFormation Template reference](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-reference.html)
