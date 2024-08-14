@@ -17,7 +17,7 @@ const siteMetadata = {
   // twitter: 'https://twitter.com/Twitter',
   // facebook: 'https://facebook.com/yourusername',
   // youtube: 'https://youtube.com/yourusername',
-  // linkedin: 'https://www.linkedin.com/in/yourusername',
+  linkedin: 'https://www.linkedin.com/in/kilhyeonjun',
   // threads: 'https://www.threads.net/yourusername',
   // instagram: 'https://www.instagram.com/yourusername',
   locale: 'ko-KR',
