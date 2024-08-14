@@ -1,0 +1,229 @@
+---
+title: '항해99 플러스 백엔드 코스 6기 언어 사전 스터디 1주차 (2) - 변수'
+date: '2024-08-15 00:17:00'
+tags: ['hanghae99', 'Java', 'backend', 'pre-study']
+draft: false
+summary: '항해99 플러스 백엔드 코스 6기 언어 사전 스터디 1주차에서 변수에 대해 학습한 내용을 정리한다.'
+authors: ['default']
+---
+
+# 항해99 플러스 백엔드 코스 6기 언어 사전 스터디 1주차 - 변수
+
+## 소개
+
+항해99 플러스 백엔드 코스 6기를 진행하면서 Java의 기초를 다지기 위해 언어 사전 스터디에 참여했다.
+이번 1주차 스터디에서는 Java의 변수에 대해 학습했다.
+
+## 1. 변수의 개념
+
+변수는 프로그램에서 데이터를 저장하는 공간이다.
+Java에서는 변수를 "접시"에 비유할 수 있다.
+접시에 음식을 담듯이, 변수에 데이터를 담아 사용한다.
+
+## 2. 변수와 상수
+
+### 변수 (Variable)
+
+- 값이 변할 수 있는 저장 공간
+- 예: `int number = 10;`
+
+### 상수 (Constant)
+
+- 값이 변하지 않는 저장 공간
+- `final` 키워드 사용
+- 예: `final int MAX_VALUE = 100;`
+
+## 3. 변수의 종류
+
+Java에서 변수는 크게 두 가지로 나눌 수 있다.
+
+### 기본형 변수
+
+1. 논리형: `boolean` (true/false)
+2. 문자형: `char` ('A', '1' 등 단일 문자)
+3. 정수형: `byte`, `short`, `int`, `long`
+4. 실수형: `float`, `double`
+
+### 참조형 변수
+
+- 객체의 주소를 저장
+- 예: `String`, `Object`, `Array`, `List` 등
+
+## 4. 변수 선언과 초기화
+
+변수를 사용하기 위해서는 먼저 선언해야 한다.
+
+```java
+int age;  // 변수 선언
+age = 25; // 값 할당
+
+// 또는 한 번에
+int height = 180; // 선언과 동시에 초기화
+```
+
+## 5. 변수의 범위
+
+각 변수 타입마다 저장할 수 있는 값의 범위가 다르다.
+
+- `byte`: -128 ~ 127
+- `short`: -32,768 ~ 32,767
+- `int`: -21억 ~ 21억
+- `long`: 매우 큰 범위의 정수
+
+실수형의 경우:
+
+- `float`: 소수점 7자리까지
+- `double`: 소수점 16자리까지
+
+## 6. 래퍼 클래스 (Wrapper Class)
+
+래퍼 클래스는 기본 데이터 타입을 객체로 다루기 위해 사용된다.
+Java에서 제공하는 래퍼 클래스는 다음과 같다.
+
+| 기본 타입 | 래퍼 클래스 |
+| --------- | ----------- |
+| byte      | Byte        |
+| short     | Short       |
+| int       | Integer     |
+| long      | Long        |
+| float     | Float       |
+| double    | Double      |
+| char      | Character   |
+| boolean   | Boolean     |
+
+### 래퍼 클래스의 특징
+
+1. 객체로 다룰 수 있어 null 값을 가질 수 있다.
+2. 컬렉션(List, Set 등)에서 사용할 수 있다.
+3. 클래스이므로 다양한 메서드를 제공한다.
+
+### 박싱(Boxing)과 언박싱(Unboxing)
+
+- 박싱: 기본 타입의 값을 래퍼 클래스의 객체로 변환하는 과정
+- 언박싱: 래퍼 클래스의 객체를 기본 타입의 값으로 변환하는 과정
+
+```java
+// 박싱
+Integer num = new Integer(10);  // 명시적 박싱
+Integer num2 = 20;              // 자동 박싱
+
+// 언박싱
+int value = num.intValue();     // 명시적 언박싱
+int value2 = num2;              // 자동 언박싱
+```
+
+### 자동 박싱/언박싱
+
+Java 5부터는 자동 박싱과 언박싱을 지원하여 개발자가 명시적으로 변환하지 않아도 자동으로 변환된다.
+
+```java
+List<Integer> numbers = new ArrayList<>();
+numbers.add(10);  // 자동 박싱
+int firstNumber = numbers.get(0);  // 자동 언박싱
+```
+
+래퍼 클래스는 기본 데이터 타입과 객체 지향 프로그래밍 사이의 간격을 메우는 중요한 역할을 한다.
+특히 제네릭이나 컬렉션 프레임워크를 사용할 때 유용하게 활용된다.
+
+## 7. 형변환
+
+다른 타입의 변수로 값을 저장하거나 연산할 때 형변환이 필요하다.
+
+### 자동 형변환
+
+작은 타입에서 큰 타입으로 변환될 때 자동으로 이루어진다.
+
+```java
+int intValue = 10;
+long longValue = intValue; // int에서 long으로 자동 형변환
+```
+
+### 강제 형변환
+
+큰 타입에서 작은 타입으로 변환할 때 명시적으로 해야 한다.
+
+```java
+double doubleValue = 3.14;
+int intValue = (int)doubleValue; // double에서 int로 강제 형변환
+```
+
+## 8. 1주차 숙제 - 요리 레시피 메모장 만들기
+
+### 프로그램 요구사항
+
+1. 요리 제목 입력받기
+2. 요리 별점을 1~5 사이의 실수로 입력받기
+3. 요리 레시피를 한 문장씩 총 10문장 입력받기
+4. 입력받은 정보를 형식에 맞게 출력하기
+
+### 주요 구현 포인트
+
+1. `Scanner` 클래스를 사용하여 사용자 입력 받기
+2. 문자열 연산을 통해 요리 제목 괄호로 감싸기
+3. 실수형 별점을 정수형으로 변환 (형변환 활용)
+4. 정수 별점을 백분율로 변환 (형변환 및 연산 활용)
+5. 입력받은 레시피에 번호 붙여 출력하기
+
+### 구현 코드
+
+```java
+import java.util.Scanner;
+
+public class RecipeNotepad {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        // 요리 제목 입력
+        String title = sc.nextLine();
+
+        // 요리 별점 입력
+        // nextFloat()의 경우는 줄바꿈을 소비하지 않으므로 nextLine()을 사용하여 별도의 줄바꿈 소비가 필요함
+        // nextLine()의 할 경우 불필요한 io가 발생하므로 nextLine()을 사용 후 형변환하는 방식으로 구현
+        float rating = Float.parseFloat(sc.nextLine());
+
+        // 레시피 입력
+        String[] recipes = new String[10];
+        recipes[0] = sc.nextLine();
+        recipes[1] = sc.nextLine();
+        recipes[2] = sc.nextLine();
+        recipes[3] = sc.nextLine();
+        recipes[4] = sc.nextLine();
+        recipes[5] = sc.nextLine();
+        recipes[6] = sc.nextLine();
+        recipes[7] = sc.nextLine();
+        recipes[8] = sc.nextLine();
+        recipes[9] = sc.nextLine();
+
+        // 요리 제목 출력
+        System.out.println("[ " + title + " ]");
+
+        // 요리 별점 형변환
+        int ratingInt = (int) rating;
+
+        // 요리 별점 출력
+        System.out.println("별점 : " + ratingInt + " (" + (ratingInt / 5.0 * 100) + "%)");
+
+        // 레시피 출력
+        System.out.println("1. " + recipes[0]);
+        System.out.println("2. " + recipes[1]);
+        System.out.println("3. " + recipes[2]);
+        System.out.println("4. " + recipes[3]);
+        System.out.println("5. " + recipes[4]);
+        System.out.println("6. " + recipes[5]);
+        System.out.println("7. " + recipes[6]);
+        System.out.println("8. " + recipes[7]);
+        System.out.println("9. " + recipes[8]);
+        System.out.println("10. " + recipes[9]);
+    }
+}
+```
+
+## 결론
+
+변수는 Java 프로그래밍의 기본이 되는 중요한 개념이다.
+적절한 변수 사용은 효율적이고 유지보수가 쉬운 코드를 작성하는 데 도움이 된다.
+이번 스터디를 통해 변수의 개념, 종류, 선언 방법, 그리고 형변환에 대해 학습했다.
+앞으로의 Java 학습에 있어 이 기초 지식이 큰 도움이 될 것 같다.
+
+---
