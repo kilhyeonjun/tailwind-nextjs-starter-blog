@@ -1,7 +1,8 @@
 ---
 title: '항해99 플러스 백엔드 코스 6기 프레임워크 사전 스터디 1주차 - UML 및 ERD 설계'
 date: '2024-08-14 20:58:00'
-tags: ['hanghae99', 'Java', 'Spring Boot', 'backend', 'pre-study', 'UML', 'ERD']
+lastmod: '2024-08-16 14:40:00'
+tags: ['hanghae99', 'Java', 'Spring Boot', 'backend', 'pre-study', 'UML', 'ERD', 'MySQL']
 draft: false
 summary: '항해99 플러스 백엔드 코스 6기 프레임워크 사전 스터디 1주차에서 게시판 애플리케이션을 위한 UML과 ERD를 설계한 과정을 소개한다.'
 authors: ['default']
@@ -101,12 +102,12 @@ flowchart TD
 
 ERD는 데이터베이스의 구조를 시각적으로 표현한 것으로, 엔티티 간의 관계를 보여준다.
 JWT 인증을 적용한 게시판 애플리케이션을 위한 ERD는 다음과 같다.
-이 ERD는 PostgreSQL을 사용한다는 점을 고려하여 설계했다.
+이 ERD는 MySQL을 사용한다는 점을 고려하여 설계했다.
 
 ```mermaid
 erDiagram
     POSTS {
-        SERIAL id PK
+        INT id PK
         VARCHAR(200) title
         TEXT content
         INT user_id FK
@@ -114,7 +115,7 @@ erDiagram
         TIMESTAMP updated_at
     }
     USERS {
-        SERIAL id PK
+        INT id PK
         VARCHAR(50) username UK
         VARCHAR(255) password
         VARCHAR(100) email UK
@@ -123,7 +124,7 @@ erDiagram
         TIMESTAMP updated_at
     }
     COMMENTS {
-        SERIAL id PK
+        INT id PK
         TEXT content
         INT post_id FK
         INT user_id FK
@@ -135,13 +136,13 @@ erDiagram
     POSTS ||--o{ COMMENTS : "has"
 ```
 
-[Mermaid Live Editor에서 ERD 보기](https://mermaid.live/edit#pako:eNq1U21rwkAM_itHPk2o0qptXb-VzTHZfMHWMUZBjjbaou3J9Ypz2v--q3W6zQobbPlyJHnykCfJbcFnAYIFyG8jOuc09hIibTR0XIdsS6cwpzvu2Y8kCsjo4RR9ssc39_b4qqmqNSIiscRTzu0-u8RnicBEnKK9gUuyFPlUMt19YnJ7_a7j2v0R8TlSgcGUiqpstgq-ZPPymcj-ftGvLtstukhojGRSJUjXa2RF03TNeHCe1gq9GNNoebma44xjGk4FW2DyZ0Jvhv1-d_CT3Vye_4ql4vv8_3Uvu129zraHo7KIB2seCUw9qAAdBZ7jyvoqXEglCBSIkculBPKe9-PxQIQYowcFJqB8UTDlEkczwZxN4oMleIYKcJbNQ7BmdJlKr9Ry-A8fkBVNXhiLjyDpg7WFV7AMrdExNcO8bhtau6M1WwpswGrqaqPdNDXTaOlqRzNbuQJvewItfwf1L_ka)
+[Mermaid Live Editor에서 ERD 보기](https://mermaid.live/edit#pako:eNq1U1FrwkAM_itHniZUaattXd_EOSajKraOMQpytFGLtifXK87V_vddreicyvaw5eVI8uUjX5LLIWAhgg3IHyI65zT2EyJtNHQ9l-SVU1p_4JEoJKPnU-ilM-4-dcZ3uqrWiIjECk85r_fqkYAlAhNxTpKlyKeS6fELk9d3eq7XcUYk4EgFhlMqrmWzdXiWLapn4vbGv23WkL2WLSQ0RjK5psYwamRN03TDeHiZ1kqxGNNodbua44xjupgKtsTkz1R2h47TG_y4lduTX7NUfJ_8v25kt6vXWX64JZv4sOGRwNSHK6CjuktcVX8Nt6ASBArEyOVGQnnG-9n4IBYYow8lJqR8WTIVEkczwdxtEoAteIYKcJbNF2DP6CqVXqXl8A2O0TVN3hg788HO4R1sU2u0Lc207lum1mprelOBLdi6oTZauqVZZtNQ25rVLBT42BNoxSdfgfbm)
 
 ### ERD 설명
 
 1. **POSTS 테이블**
 
-   - `id`: SERIAL 타입으로 자동 증가하는 기본 키(PK)다.
+   - `id`: INT 타입으로 자동 증가하는 기본 키(PK)다.
    - `title`: VARCHAR(200) 타입으로 게시글 제목을 저장한다.
    - `content`: TEXT 타입으로 긴 게시글 내용을 저장한다.
    - `user_id`: INT 타입으로 USERS 테이블의 id를 참조하는 외래 키(FK)다.
@@ -149,7 +150,7 @@ erDiagram
 
 2. **USERS 테이블 (추가 요구사항)**
 
-   - `id`: SERIAL 타입으로 자동 증가하는 기본 키(PK)다.
+   - `id`: INT 타입으로 자동 증가하는 기본 키(PK)다.
    - `username`: VARCHAR(50) 타입으로 사용자 이름을 저장하며, UNIQUE 제약조건을 갖는다.
    - `password`: VARCHAR(255) 타입으로 암호화된 비밀번호를 저장한다.
    - `email`: VARCHAR(100) 타입으로 이메일 주소를 저장하며, UNIQUE 제약조건을 갖는다.
@@ -157,7 +158,7 @@ erDiagram
    - `created_at`, `updated_at`: TIMESTAMP 타입으로 계정 생성 및 수정 시간을 추적한다.
 
 3. **COMMENTS 테이블 (추가 요구사항)**
-   - `id`: SERIAL 타입으로 자동 증가하는 기본 키(PK)다.
+   - `id`: INT 타입으로 자동 증가하는 기본 키(PK)다.
    - `content`: TEXT 타입으로 댓글 내용을 저장한다.
    - `post_id`: INT 타입으로 POSTS 테이블의 id를 참조하는 외래 키(FK)다.
    - `user_id`: INT 타입으로 USERS 테이블의 id를 참조하는 외래 키(FK)다.
@@ -176,24 +177,24 @@ erDiagram
 - 한 명의 사용자(USERS)는 여러 개의 댓글(COMMENTS)을 작성할 수 있다. (1:N 관계)
 - 하나의 게시글(POSTS)에는 여러 개의 댓글(COMMENTS)이 달릴 수 있다. (1:N 관계)
 
-### PostgreSQL 특성 반영
+### MySQL 특성 반영
 
-- SERIAL 타입을 사용하여 자동 증가하는 기본 키를 구현했다.
+- INT 타입을 사용하여 자동 증가하는 기본 키를 구현했다.
 - TEXT 타입을 사용하여 긴 내용의 게시글과 댓글을 효율적으로 저장할 수 있게 했다.
 - TIMESTAMP 타입을 사용하여 생성 및 수정 시간을 정확하게 추적할 수 있게 했다.
 - VARCHAR 타입의 길이를 적절히 설정하여 저장 공간을 효율적으로 사용하게 했다.
 
-이 ERD를 통해 우리는 PostgreSQL 기반의 데이터베이스 구조와 각 엔티티 간의 관계를 명확히 정의할 수 있었다.
+이 ERD를 통해 MySQL 기반의 데이터베이스 구조와 각 엔티티 간의 관계를 명확히 정의할 수 있었다.
 이는 향후 JPA를 사용한 엔티티 클래스 구현과 데이터베이스 설계에 직접적으로 활용될 것이다.
 
 ## 결론
 
-항해99 플러스 백엔드 코스 6기 프레임워크 사전 스터디 1주차에서 우리는 게시판 애플리케이션의 설계를 위해 UML과 ERD를 작성했다.
+항해99 플러스 백엔드 코스 6기 프레임워크 사전 스터디 1주차에서 게시판 애플리케이션의 설계를 위해 UML과 ERD를 작성했다.
 이 과정을 통해 다음과 같은 성과를 얻을 수 있었다.
 
 1. **UML 다이어그램을 통한 시스템 구조 파악**: 유스케이스 다이어그램을 통해 사용자와 시스템 간의 상호작용을 시각화하고, 주요 기능을 명확히 정의했다.
 
-2. **ERD를 통한 데이터 모델 설계**: 주요 엔티티와 그들 간의 관계를 정의하여 PostgreSQL 기반의 데이터베이스 구조를 설계했다.
+2. **ERD를 통한 데이터 모델 설계**: 주요 엔티티와 그들 간의 관계를 정의하여 MySQL 기반의 데이터베이스 구조를 설계했다.
 
 3. **JWT 인증 방식 적용**: 세션 기반 인증 대신 JWT를 사용하여 더 확장 가능하고 유연한 인증 시스템을 설계했다.
 
@@ -201,15 +202,64 @@ erDiagram
 
 5. **시스템 전체 구조에 대한 이해**: UML과 ERD를 통해 애플리케이션의 전체 구조와 데이터 흐름을 종합적으로 이해할 수 있었다.
 
-PostgreSQL을 선택함으로써 다음과 같은 이점을 기대할 수 있다.
+### PostgreSQL vs MySQL: 게시판 애플리케이션을 위한 고려사항
 
-1. **강력한 데이터 무결성**: PostgreSQL의 ACID 준수와 트랜잭션 지원으로 데이터의 일관성을 유지할 수 있다.
-2. **확장성**: 대용량 데이터 처리와 복잡한 쿼리 최적화에 강점이 있어, 향후 서비스 확장에 유리하다.
-3. **풍부한 데이터 타입**: TEXT, JSONB 등 다양한 데이터 타입을 제공하여 유연한 데이터 모델링이 가능하다.
+초기에는 PostgreSQL을 고려했으나, 게시판 애플리케이션의 특성을 고려하여 MySQL을 선택했다.
+두 데이터베이스 시스템의 주요 특징을 비교해보면
+
+1. **성능**:
+
+   - PostgreSQL: 복잡한 쿼리와 대규모 데이터셋에서 우수한 성능을 보인다. 특히 복잡한 조인이나 분석 쿼리에 강점이 있다.
+   - MySQL: 읽기 작업과 단순한 쿼리에서 뛰어난 성능을 발휘한다. 특히 InnoDB 엔진은 높은 동시성 처리에 효율적이다.
+
+2. **ACID 준수**:
+
+   - PostgreSQL: 완벽한 ACID 준수를 제공한다.
+   - MySQL: InnoDB 엔진 사용 시 ACID를 준수한다.
+
+3. **확장성**:
+
+   - PostgreSQL: 수평적 확장성이 우수하며, 대규모 시스템에 적합하다. 파티셔닝과 병렬 쿼리 실행을 지원한다.
+   - MySQL: 수직적 확장에 강점이 있으며, 중소규모 시스템에 적합하다. 클러스터링을 통한 확장도 가능하다.
+
+4. **데이터 타입과 기능**:
+
+   - PostgreSQL: 다양하고 복잡한 데이터 타입을 지원하며, JSON, 배열 등의 고급 데이터 타입을 제공한다.
+   - MySQL: 기본적인 데이터 타입을 지원하며, 최근 버전에서 JSON 지원이 개선되었다.
+
+5. **동시성 제어**:
+
+   - PostgreSQL: MVCC(Multi-Version Concurrency Control)를 사용하여 읽기 작업이 쓰기 작업을 차단하지 않는다.
+   - MySQL: InnoDB 엔진에서 MVCC를 구현하여 높은 동시성을 제공한다.
+
+6. **업데이트 연산**:
+   - PostgreSQL: MVCC로 인해 UPDATE 시 새 버전의 행을 생성한다. 이는 대량 업데이트 시 추가적인 오버헤드를 발생시킬 수 있다.
+   - MySQL: 실제 데이터를 직접 수정하는 방식으로, 단순 UPDATE의 경우 더 효율적일 수 있다.
+
+### 데이터베이스 선택 시 고려사항
+
+게시판 애플리케이션을 위한 데이터베이스 선택 시 다음 요소들을 고려해야 한다:
+
+1. **예상 트래픽과 데이터 규모**: 중소규모 애플리케이션에서는 두 데이터베이스 모두 충분한 성능을 제공할 수 있다.
+
+2. **쿼리 복잡성**: 단순한 CRUD 작업이 주를 이룬다면 MySQL이 적합할 수 있으나, 복잡한 검색이나 분석 기능이 필요하다면 PostgreSQL이 유리할 수 있다.
+
+3. **확장성 요구사항**: 향후 대규모 확장을 고려한다면 PostgreSQL의 수평적 확장성이 장점이 될 수 있다.
+
+4. **개발 팀의 경험**: 팀의 기존 경험과 익숙도도 중요한 고려사항이다.
+
+5. **특수 기능 요구사항**: 전문 검색, 지리정보 처리 등 특수한 기능이 필요한 경우 PostgreSQL이 더 많은 기능을 제공한다.
+
+6. **생태계와 지원**: Spring Boot와의 통합, 호스팅 옵션, 커뮤니티 지원 등을 고려해야 한다.
+
+### 결론
+
+MySQL과 PostgreSQL 모두 게시판 애플리케이션에 적합한 선택이 될 수 있다.
+초기에는 MySQL을 선택했지만, 이는 프로젝트의 구체적인 요구사항과 향후 확장 계획을 바탕으로 재검토될 수 있다.
 
 ## 향후 계획: Redis 도입
 
-현재 설계에서는 PostgreSQL을 주 데이터베이스로 사용하고 있지만, 추후 시스템의 성능 향상을 위해 Redis를 도입할 계획이다.
+현재 설계에서는 MySQL을 주 데이터베이스로 사용하고 있지만, 추후 시스템의 성능 향상을 위해 Redis를 도입할 계획이다.
 Redis 도입 시 다음과 같은 이점을 얻을 수 있을 것으로 예상된다.
 
 1. **캐싱을 통한 성능 향상**: 자주 접근하는 데이터를 Redis에 캐싱하여 데이터베이스 부하를 줄이고 응답 속도를 개선할 수 있다.
@@ -234,10 +284,10 @@ Redis 도입을 위한 단계별 계획
 
 이러한 설계 과정은 실제 개발 단계에서 매우 중요한 기초가 될 것이다.
 다음 단계에서는 이 설계를 바탕으로 Spring Boot 프로젝트를 구성하고, JPA를 활용하여 엔티티를 구현할 예정이다.
-또한, PostgreSQL과의 연동을 설정하고, 컨트롤러와 서비스 계층을 개발하여 실제로 동작하는 애플리케이션을 만들어나갈 것이다.
+또한, MySQL과의 연동을 설정하고, 컨트롤러와 서비스 계층을 개발하여 실제로 동작하는 애플리케이션을 만들어나갈 것이다.
 
 UML과 ERD를 활용한 이러한 접근 방식은 향후 더 복잡한 프로젝트에서도 큰 도움이 될 것이다.
-또한, PostgreSQL의 선택과 향후 Redis 도입 계획은 견고하고 확장 가능한 백엔드 시스템을 구축하는 데 기여할 것이다.
+또한, MySQL의 선택과 향후 Redis 도입 계획은 견고하고 확장 가능한 백엔드 시스템을 구축하는 데 기여할 것이다.
 
 앞으로의 개발 과정에서 이번 설계를 기반으로 하여, 효율적이고 유지보수가 용이한 애플리케이션을 구현해 나갈 수 있기를 기대한다.
 또한, 지속적인 성능 모니터링과 개선을 통해 사용자에게 더 나은 서비스를 제공할 수 있도록 노력할 것이다.
