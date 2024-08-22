@@ -1,0 +1,254 @@
+---
+title: '항해99 플러스 백엔드 코스 6기 언어 사전 스터디 2주차 (3) - 컬렉션'
+date: '2024-08-22 17:40:00'
+tags: ['hanghae99', 'Java', 'backend', 'pre-study', 'collection']
+draft: false
+summary: '항해99 플러스 백엔드 코스 6기 언어 사전 스터디 2주차에서 컬렉션에 대해 학습한 내용을 정리한다.'
+authors: ['default']
+---
+
+# 항해99 플러스 백엔드 코스 6기 언어 사전 스터디 2주차 - 컬렉션
+
+## 소개
+
+이번 2주차 스터디에서는 Java의 컬렉션에 대해 학습했다.
+
+## 1. 컬렉션 프레임워크 (Collection Framework)
+
+### 컬렉션 프레임워크란?
+
+- 여러 객체를 효율적으로 관리하기 위한 자료구조와 알고리즘을 제공하는 프레임워크
+- Java에서 제공하는 `java.util` 패키지의 인터페이스와 클래스로 구현
+
+### 주요 인터페이스
+
+1. Collection 인터페이스
+
+   - 객체의 집합을 나타내는 최상위 인터페이스
+   - List, Set, Queue 인터페이스의 상위 인터페이스
+
+   - `List`: 순서가 있는 데이터의 집합을 나타내는 인터페이스
+   - `Set`: 순서가 없고 중복을 허용하지 않는 데이터의 집합을 나타내는 인터페이스
+   - `Queue`: 데이터를 임시로 저장해두는 큐 자료구조를 나타내는 인터페이스 (FIFO 방식)
+
+2. Map 인터페이스
+   - 키와 값의 쌍으로 이루어진 데이터의 집합을 나타내는 인터페이스
+   - Collection 인터페이스를 직접 구현하지 않지만, 컬렉션 프레임워크의 일부
+
+### 컬렉션과 Map의 관계
+
+- Map은 Collection 인터페이스를 직접 구현하지 않지만, 컬렉션 프레임워크의 중요한 부분
+- Map의 values() 메소드는 Collection을 반환하고, entrySet()과 keySet() 메소드는 Set을 반환하여 간접적으로 컬렉션과 연결됨
+
+### List 인터페이스
+
+- 순서가 있는 데이터의 집합
+- 중복을 허용
+- 인덱스로 데이터에 접근 가능
+
+#### ArrayList 클래스
+
+- 가변 크기의 배열 구현
+- 배열의 크기가 부족할 경우 자동으로 크기를 늘림
+- 배열의 중간에 요소를 추가하거나 삭제할 경우 다른 요소들을 이동해야 함
+- 데이터 조회가 빈번한 경우 유리
+
+#### LinkedList 클래스
+
+- 노드로 연결된 리스트 구현
+- 요소를 추가하거나 삭제할 때 다음 요소의 주소를 변경하면 되므로 ArrayList보다 빠름
+- 요소의 추가, 삭제가 빈번할 경우 유용
+- 인덱스로 요소에 접근할 때는 처음부터 찾아야 하므로 느림
+
+#### Stack 클래스
+
+- LIFO(Last In First Out) 방식의 스택 자료구조 구현
+- `push()`, `pop()`, `peek()` 등의 메서드 제공
+
+#### Queue 인터페이스
+
+- FIFO(First In First Out) 방식의 큐 자료구조
+- `LinkedList` 클래스로 구현
+- `offer()`, `poll()`, `peek()` 등의 메서드 제공
+
+### Set 인터페이스
+
+- 순서가 없고 중복을 허용하지 않는 데이터의 집합
+- `HashSet`, `TreeSet`, `LinkedHashSet` 클래스로 구현
+
+#### HashSet
+
+- 해시 테이블을 사용한 집합 구현
+- 가장 빠르며 순서를 전혀 예측할 수 없음
+- 중복 제거에 효과적
+
+#### TreeSet
+
+- 이진 검색 트리를 사용한 집합 구현
+- 정렬된 순서대로 보관하며 정렬 방법을 지정할 수 있음
+- 정렬이 필요한 경우 유용
+
+#### LinkedHashSet
+
+- 해시 테이블과 연결 리스트를 사용한 집합 구현
+- 추가된 순서, 또는 가장 최근에 접근한 순서대로 접근 가능
+- 예측 가능한 반복 순서가 필요할 때 유용
+
+### Map 인터페이스
+
+- 키와 값의 쌍으로 이루어진 데이터의 집합
+- 키는 중복을 허용하지 않으며 값은 중복을 허용
+- `HashMap`, `TreeMap`, `LinkedHashMap` 클래스로 구현
+
+#### HashMap
+
+- 중복을 허용하지 않고 순서를 보장하지 않음
+- 키와 값으로 null이 허용
+- 가장 많이 사용되는 Map 구현체
+
+#### TreeMap
+
+- 키 값을 기준으로 정렬을 할 수 있음
+- 저장 시 정렬(기본적으로 오름차순)을 하기 때문에 저장 시간이 다소 오래 걸림
+- 정렬된 상태로 Map을 유지해야 할 때 유용
+
+#### LinkedHashMap
+
+- HashMap과 LinkedList의 특성을 결합
+- 입력 순서나 최근 사용 순서대로 순회 가능
+
+> [!TIP]
+>
+> `length` vs `length()` vs `size()` - 길이값 가져오기
+>
+> 1. length  
+>    arrays(int[], double[], String[])  
+>    `length`는 배열의 길이를 조회한다.
+> 2. length()  
+>    String related Object(String, StringBuilder etc)  
+>    `length()`는 문자열의 길이를 조회한다. (ex. "ABCD".length() == 4)
+> 3. size()  
+>    Collection Object(ArrayList, Set etc)  
+>    `size()`는 컬렉션 타입목록의 길이를 조회한다.
+
+## 2주차 숙제 - 자료구조 요리 레시피 메모장 만들기
+
+### 프로그램 요구사항
+
+1. 입력값을 저장할 자료구조 선택하기 (List / Set / Map)
+2. 요리 제목 입력받기
+3. 요리 레시피를 한 문장씩 입력받기 (종료 조건: "끝" 입력)
+4. 입력받은 정보를 형식에 맞게 출력하기
+
+### 주요 구현 포인트
+
+1. `Scanner` 클래스를 사용하여 사용자 입력 받기
+2. 선택한 자료구조(List, Set, Map)를 사용하여 레시피 저장하기
+3. 문자열 연산을 통해 출력 형식 맞추기 (자료구조명과 요리 제목 괄호로 감싸기)
+4. 레시피 각 문장에 번호 붙여 출력하기
+
+<details>
+<summary>구현 코드</summary>
+
+```java
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Scanner;
+
+public class RecipeNotepad {
+
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+
+    // 저장할 자료구조명 입력 (List / Set / Map)
+    String dataStructure = sc.nextLine();
+
+    // 요리 제목 입력
+    String recipeTitle = sc.nextLine();
+
+    // 자료 구조 선언
+    var recipes = createDataStructure(dataStructure);
+
+    // 레시피 입력
+    while (true) {
+      String recipe = sc.nextLine();
+      if (recipe.equals("끝")) {
+        break;
+      }
+      addRecipe(recipes, recipe);
+    }
+
+    // 레시피 출력
+    String recipeContent = getRecipeContent(recipes);
+
+    System.out.printf("[ %s 으로 저장된 %s ] \n", dataStructure, recipeTitle);
+    System.out.println(recipeContent);
+  }
+
+  private static Object createDataStructure(String dataStructure) {
+    switch (dataStructure.toUpperCase()) {
+      case "LIST":
+        return new ArrayList<String>();
+      case "SET":
+        return new LinkedHashSet<String>();
+      case "MAP":
+        return new LinkedHashMap<String, String>();
+      default:
+        throw new IllegalArgumentException("지원하지 않는 자료구조입니다.");
+    }
+  }
+
+  private static void addRecipe(Object recipes, String recipe) {
+    if (recipes instanceof ArrayList) {
+      ((ArrayList<String>) recipes).add(recipe);
+    } else if (recipes instanceof LinkedHashSet) {
+      ((LinkedHashSet<String>) recipes).add(recipe);
+    } else if (recipes instanceof LinkedHashMap) {
+      ((LinkedHashMap<Integer, String>) recipes).put(
+          ((LinkedHashMap<String, String>) recipes).size(), recipe);
+    }
+  }
+
+  private static String getRecipeContent(Object recipes) {
+    StringBuilder sb = new StringBuilder();
+
+    int i = 1;
+    Collection<String> recipeCollection;
+
+    if (recipes instanceof ArrayList) {
+      recipeCollection = (ArrayList<String>) recipes;
+    } else if (recipes instanceof LinkedHashSet) {
+      recipeCollection = (LinkedHashSet<String>) recipes;
+    } else if (recipes instanceof LinkedHashMap) {
+      recipeCollection = ((LinkedHashMap<String, String>) recipes).values();
+    } else {
+      throw new IllegalArgumentException("지원하지 않는 자료구조입니다.");
+    }
+
+    for (String recipe : recipeCollection) {
+      sb.append(i++).append(". ").append(recipe).append("\n");
+    }
+
+    return sb.toString();
+  }
+}
+```
+
+> [!NOTE]
+> 이 예제의 코드는 Object 타입을 사용하여 다형성을 활용하였다.
+> 다형성을 사용하면 코드의 유연성을 높일 수 있으나, 타입 캐스팅이 필요하므로 주의해야 한다.
+> 제네릭을 사용하면 타입 캐스팅을 줄일 수 있다.
+
+</details>
+
+## 결론
+
+2주차에선 Java의 연산자, 조건문, 반복문, 배열, 컬렉션에 대해 학습했다.  
+해당 주차에서 컬렉션에 대해 학습하며, 배열과 컬렉션의 차이점을 이해할 수 있었다.  
+컬렉션은 배열과 달리 크기가 가변적이며, 여러 객체를 모아놓은 것이라는 점을 알 수 있었다.  
+컬렉션은 `java.util` 패키지의 인터페이스와 클래스로 구현되며, `List`, `Set`, `Map`, `Queue` 인터페이스가 있다.  
+각 인터페이스는 다양한 클래스로 구현되며, 각 클래스는 특징과 사용 용도가 다르다.  
+컬렉션을 사용하면 데이터를 효율적으로 관리할 수 있으며, 다양한 자료구조를 활용할 수 있다.  
+본문에 다룬 컬렉션 클랙스 외에도 다양한 컬렉션 클래스가 존재하므로 추후 학습이 필요할 것 같다.
