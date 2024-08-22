@@ -1,0 +1,232 @@
+---
+title: '항해99 플러스 백엔드 코스 6기 언어 사전 스터디 2주차 (2) - 배열'
+date: '2024-08-22 16:00:00'
+tags: ['hanghae99', 'Java', 'backend', 'pre-study', 'array']
+draft: false
+summary: '항해99 플러스 백엔드 코스 6기 언어 사전 스터디 2주차에서 배열에 대해 학습한 내용을 정리한다.'
+authors: ['default']
+---
+
+# 항해99 플러스 백엔드 코스 6기 언어 사전 스터디 2주차 - 배열
+
+## 소개
+
+이번 2주차 스터디에서는 Java의 배열에 대해 학습했다.
+
+## 1. 배열
+
+### 배열이란?
+
+- 같은 타입의 여러 변수를 하나의 묶음으로 다루는 것
+
+### 배열 선언
+
+- 타입 [] 변수:
+  - `int[] intArray;`
+- 타입 변수 []:
+  - `int intArray[];`
+
+```java
+// 배열 선언
+
+// 일반적인 선언방식
+int[] intArray; // 정수 배열
+long[] longArray;
+double[] doubleArray; // 실수 배열
+char[] charArray; // 문자 배열
+String[] stringArray; // 문자열 배열
+```
+
+```java
+// 배열 선언
+// 2번째 선언방식
+int intArray[]; // 정수 배열
+long longArray[];
+double doubleArray[]; // 실수 배열
+char charArray[]; // 문자 배열
+String stringArray[]; // 문자열 배열
+```
+
+### 배열 생성
+
+- `new` 연산자를 사용하여 배열 생성
+- 대괄호 안에 배열의 크기를 지정
+- 배열의 인덱스는 0부터 시작
+- 타입별 초기값으로 초기화
+
+```java
+// 배열 생성
+
+// 배열 생성후 초기화하면 배열의 주소가 할당된다.
+int[] intArray = new int[3]; // 초기값 {0,0,0}
+boolean[] boolArray = new boolean[3]; // 초기값 {false, false, false}
+String[] stringArray = new String[3]; // 초기값 {"","",""}
+
+// 배열 선언만 해놓고 나중에 초기화를 시킬수도 있다.
+int[] intArray2;
+intArray2 = new int[3]; // 초기값 {0,0,0}
+```
+
+### 배열 순회
+
+- `for`문을 사용하여 배열의 요소를 순회
+
+```java
+//길이가 8인 정수배열 선언
+int[] intArray = new int[3];
+
+// 배열이 초기화된 값을 출력해본다.
+for(int i=0; i<intArray.length; i++) { // .length 는 배열의 길이
+    System.out.println(intArray[i]);
+}
+
+// 출력
+0
+0
+0
+```
+
+### 배열 초기화
+
+- 배열을 초기화하는 방법
+  - 중괄호를 사용한 초기화
+  - 반복문을 사용한 초기화
+  - `Arrays.fill` 메소드를 사용해서 초기화
+
+```java
+// 배열 초기화
+
+import java.util.Arrays; // Arrays 클래스를 import 해주세요!
+
+public class Main {
+
+    public static void main(String[] args) {
+        //1. 배열에 특정값 대입하며 선언
+        int[] intArray = {1, 2, 3, 4, 5};
+        String[] stringArray = {"a", "b", "c", "d"};
+
+        //2-1. for문을 통해 값을 대입
+        for (int i = 0; i < intArray.length; i++) {
+            intArray[i] = i;
+        }
+
+        //2-2. 향상된 for문을 통한 배열 출력
+        for (int i : intArray) {
+            System.out.print(i); // 01234
+        }
+
+        System.out.println(); // 줄바꿈
+
+        //3. 배열의 주소를 모두 같은값으로 초기화
+        Arrays.fill(intArray, 1);//배열의 모든 값을 1로 초기화
+        for (int i : intArray) {
+            System.out.print(i); // 11111
+        }
+    }
+}
+
+// 출력
+01234
+11111
+```
+
+### 복사
+
+#### 얕은 복사
+
+- 배열의 주소만 복사
+- 같은 배열을 참조하게 됨
+
+```java
+// 얕은 복사
+
+int[] a = { 1, 2, 3, 4 };
+int[] b = a; // 얕은 복사
+
+b[0] = 3; // b 배열의 0번째 순번값을 3으로 수정했습니다. (1 -> 3)
+
+System.out.println(a[0]); // 출력 3 <- a 배열의 0번째 순번값도 3으로 조회됩니다.
+```
+
+#### 깊은 복사
+
+- 배열의 값을 복사
+- 새로운 배열을 생성하여 복사
+
+```java
+// 깊은 복사
+
+int[] a = { 1, 2, 3, 4 };
+int[] b = new int[a.length];
+
+for (int i = 0; i < a.length; i++) {
+    b[i] = a[i]; // 깊은 복사
+}
+
+b[0] = 3; // b 배열의 0번째 순번값을 3으로 수정했습니다. (1 -> 3)
+
+System.out.println(a[0]); // 출력 1 <- 깊은 복사를 했기때문에 a 배열은 그대로 입니다.
+```
+
+```java
+// 깊은 복사 메서드
+
+// 1. clone() 메서드
+int[] a = { 1, 2, 3, 4 };
+int[] b = a.clone(); // 가장 간단한 방법입니다.
+// 하지만, clone() 메서드는 2차원이상 배열에서는 얕은 복사로 동작합니다!!
+```
+
+```java
+// 깊은 복사 메서드
+
+import java.util.Arrays;
+
+public class Main {
+    public static void main(String[] args) {
+        // 2. Arrays.copyOf() 메서드
+        int[] a = { 1, 2, 3, 4 };
+        int[] b = Arrays.copyOf(a, a.length); // 배열과 함께 length값도 같이 넣어줍니다.
+    }
+}
+```
+
+### 다차원 배열
+
+- 2차원 배열: 배열을 요소로 갖는 배열
+- 3차원 배열: 2차원 배열을 요소로 갖는 배열
+
+#### 다차원 배열 선언
+
+- 2차원 배열을 선언할때는 1차원 배열에 대괄호를 2개 사용
+  - `int[][] array`
+  - `int array[][]`
+  - `int[] array[]`
+
+#### 다차원 배열 생성
+
+- 2차원 배열을 생성할때도 대괄호를 하나더 추가
+  - `int[][] array = new int[][];`
+
+### 가변 배열
+
+- 2차원 배열의 길이가 다를 때 사용
+- 2차원 배열의 길이를 지정하지 않고 생성
+
+```java
+// 가변 배열
+
+// 선언 및 초기화
+int[][] array = new int[3][];
+// 배열 원소마다 각기다른 크기로 지정 가능합니다.
+array[0] = new int[2];
+array[1] = new int[4];
+array[2] = new int[1];
+
+// 중괄호 초기화할때도 원소배열들의 크기를 각기 다르게 생성 가능합니다.
+int[][] array2 = {
+    {10, 20},
+    {10, 20, 30, 40},
+    {10}
+};
+```
