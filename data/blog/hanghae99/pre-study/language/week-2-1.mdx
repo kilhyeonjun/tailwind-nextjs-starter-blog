@@ -1,0 +1,269 @@
+---
+title: '항해99 플러스 백엔드 코스 6기 언어 사전 스터디 2주차 (1) - 연산자, 조건문, 반복문'
+date: '2024-08-21 17:00:00'
+tags: ['hanghae99', 'Java', 'backend', 'pre-study', 'operator', 'conditional', 'loop']
+draft: false
+summary: '항해99 플러스 백엔드 코스 6기 언어 사전 스터디 2주차에서 연산자, 조건문, 반복문에 대해 학습한 내용을 정리한다.'
+authors: ['default']
+---
+
+# 항해99 플러스 백엔드 코스 6기 언어 사전 스터디 2주차 - 연산자, 조건문, 반복문
+
+## 소개
+
+이번 2주차 스터디에서는 Java의 연산자, 조건문, 반복문에 대해 학습했다.
+
+## 1. 연산자 (Operator)
+
+### 연산자와 피연산자
+
+- 연산자(Operator): 연산을 수행하는 기호
+- 피연산자(Operand): 연산자의 작업 대상
+
+```java
+// x + y = z
+int x = 5;
+int y = 10;
+
+int z = x + y; // 5(피연산자) +(연산자) 10(피연산자)
+
+System.out.println(z); // 출력값 : 15
+```
+
+### 연산자 종류
+
+- 산술 연산자: `+`, `-`, `*`, `/`, `%`
+- 비교 연산자: `==`, `!=`, `>`, `<`, `>=`, `<=`
+- 논리 연산자: `&&`, `||`, `!`
+- 대입 연산자: `=`, `+=`, `-=`, `*=`, `/=`, `%=`
+- 증감 연산자: `++`, `--`
+- 비트 연산자: `&`, `|`, `^`, `~`, `<<`, `>>`, `>>>`
+- 삼항 연산자: `조건식 ? 참일 때 값 : 거짓일 때 값`
+- instanceof 연산자: `객체 instanceof 클래스`
+
+## 2. 조건문 (Conditional Statement)
+
+### if문
+
+- 조건식이 참일 때 코드 블록을 실행
+
+```java
+boolean flag = true;
+
+if (flag) {
+    System.out.println("flag 값은 true입니다."); // flag 값은 true입니다. 출력
+}
+```
+
+### if-else문
+
+- 조건식이 참일 때와 거짓일 때 각각 다른 코드 블록을 실행
+
+```java
+// 조건문 with else if
+
+int number = 2;
+
+if (number == 1) {
+    System.out.println("number 값은 1 입니다."); // 미출력
+} else if (number == 2) {
+    System.out.println("number 값은 2 입니다."); // number 값은 2 입니다. 출력
+} else {
+    System.out.println("number 값은 모르는 값입니다."); // 미출력
+}
+```
+
+### 중첩 if문
+
+- if문 안에 또 다른 if문을 중첩하여 사용
+
+```java
+// 중첩 조건문
+boolean flag = true;
+int number = 2;
+
+if (flag) {
+    if (number == 1) {
+        System.out.println("flag 값은 true, number 값은 1 입니다."); // 미출력
+    } else if (number == 2) {
+        System.out.println("flag 값은 true, number 값은 2 입니다."); // flag 값은 true, number 값은 2 입니다. 출력
+    }
+} else {
+    if (number == 1) {
+        System.out.println("flag 값은 false, number 값은 1 입니다."); // 미출력
+    } else if (number == 2) {
+        System.out.println("flag 값은 false, number 값은 2 입니다."); // 미출력
+    }
+}
+```
+
+### switch(피연산자) / case(조건)
+
+- 피연산자의 값에 따라 case문을 실행
+
+```java
+// switch/case 문
+int month = 8;
+String monthString = "";
+
+switch (month) {
+    case 1: monthString = "1월";
+        break;
+    case 2: monthString = "2월";
+        break;
+    case 3: monthString = "3월";
+        break;
+    case 4: monthString = "4월";
+        break;
+    case 5: monthString = "5월";
+        break;
+    case 6: monthString = "6월";
+        break;
+    case 7: monthString = "7월";
+        break;
+    case 8: monthString = "8월";
+        break;
+    case 9: monthString = "9월";
+        break;
+    case 10: monthString = "10월";
+        break;
+    case 11: monthString = "11월";
+        break;
+    case 12: monthString = "12월";
+        break;
+    default: monthString = "알수 없음";
+}
+System.out.println(monthString); // 8월 출력
+```
+
+### if문과 switch문 차이점
+
+- 복합조건
+  - if문: 조건식에 여러 조건을 사용 가능
+  - switch문: 단일 조건만 사용 가능
+- 코드 중복
+  - if문: 중복 코드가 발생할 수 있음
+  - switch문: 중복 코드를 줄일 수 있음
+
+## 3. 반복문 (Loop Statement)
+
+### for문
+
+- 특정 조건이 만족할 때까지 코드 블록을 반복 실행
+
+```java
+// for 문
+for(int i=0; i < 4; i++) { // 변수 i 값은 0 ~ 3 까지 반복
+    System.out.println(i + "번째 출력"); // i 변수와 문자열 합치기
+}
+
+// 출력
+0번째 출력
+1번째 출력
+2번째 출력
+3번째 출력
+```
+
+### 향상된 for문
+
+- 배열, 컬렉션 등의 요소를 순회할 때 사용
+
+```java
+// 향상된 for 문
+
+int[] numbers = {3, 6, 9, 12, 15};
+for(int number: numbers) {
+    System.out.print(number + " ");
+}
+
+// 출력
+3 6 9 12 15
+```
+
+```java
+// 만약 기존 for 문으로 구현한다면?
+
+int[] numbers = {3, 6, 9, 12, 15};
+for(int i = 0; i < numbers.length; i++) { // 배열에 .length 를 붙이면 길이값이 응답됩니다.
+    System.out.println(numbers[i]);
+}
+
+// 출력
+3 6 9 12 15
+```
+
+### while문
+
+- 조건식이 참일 때 코드 블록을 반복 실행
+
+```java
+// while 문
+
+int number = 0;
+while(number < 3) {
+    number++;
+    System.out.println(number + "출력");
+}
+
+// 출력
+1출력
+2출력
+3출력
+```
+
+### do-while문
+
+- 코드 블록을 먼저 실행하고 조건식을 검사
+
+```java
+// do-while 문
+
+int number = 4;
+do {
+    System.out.println(number + "출력");
+} while(number < 3); // 연산을 한번 수행 후 조건문 체크
+
+// 출력
+4출력
+```
+
+### break문
+
+- 반복문을 중단하고 빠져나옴
+
+```java
+// break 명령
+
+int number = 0;
+while(number < 3) {
+    number++;
+    if (number == 2) {
+        break; // 2일때 반복 중단
+    }
+    System.out.println(number + "출력");
+}
+
+// 출력
+1출력
+```
+
+### continue문
+
+- 반복문의 나머지 코드를 실행하지 않고 다음 반복으로 넘어감
+
+```java
+// continue 명령
+
+int number = 0;
+while(number < 3) {
+    number++;
+    if (number == 2) {
+        continue; // 2일때 반복 패스
+    }
+    System.out.println(number + "출력");
+}
+
+// 출력
+1출력
+3출력
+```
