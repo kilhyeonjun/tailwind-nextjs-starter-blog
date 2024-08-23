@@ -8,8 +8,8 @@ const siteMetadata = {
   theme: 'system', // system, dark or light
   siteUrl: 'https://kilhyeonjun.vercel.app/',
   siteRepo: 'https://github.com/kilhyeonjun/tailwind-nextjs-starter-blog',
-  siteLogo: '/static/images/logo.png',
-  socialBanner: '/static/images/twitter-card.png',
+  siteLogo: `${process.env.BASE_PATH || ''}/static/images/logo.png`,
+  socialBanner: `${process.env.BASE_PATH || ''}/static/images/twitter-card.png`,
   // mastodon: 'https://mastodon.social/@mastodonuser',
   email: 'kboxstar@gmail.com',
   github: 'https://github.com/kilhyeonjun',
@@ -21,6 +21,8 @@ const siteMetadata = {
   // threads: 'https://www.threads.net/yourusername',
   // instagram: 'https://www.instagram.com/yourusername',
   locale: 'ko-KR',
+  // set to true if you want a navbar fixed to the top
+  stickyNav: false,
   analytics: {
     // If you want to use an analytics provider you have to add it to the
     // content security policy in the `next.config.js` file.
