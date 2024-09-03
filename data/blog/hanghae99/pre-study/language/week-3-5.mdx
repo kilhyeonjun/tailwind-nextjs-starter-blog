@@ -1,0 +1,332 @@
+---
+title: '항해99 플러스 백엔드 코스 6기 언어 사전 스터디 3주차 (5) - 추상 클래스, 인터페이스'
+date: '2024-09-03 19:00:00'
+tags: ['hanghae99', 'Java', 'backend', 'pre-study', 'abstract class', 'interface']
+draft: false
+summary: '항해99 플러스 백엔드 코스 6기 언어 사전 스터디 3주차에서 추상 클래스와 인터페이스에 대해 학습한 내용을 정리한다.'
+authors: ['default']
+---
+
+# 항해99 플러스 백엔드 코스 6기 언어 사전 스터디 3주차 - 추상 클래스, 인터페이스
+
+## 1. 추상 클래스 (Abstract Class)
+
+### 추상 클래스란?
+
+- 하나 이상의 추상 메소드를 포함한 클래스
+- 추상 메소드: 선언만 되어 있고 구현이 없는 메소드
+- `abstract` 키워드를 사용하여 추상 클래스를 정의
+
+### 추상 클래스의 특징
+
+- 인스턴스를 직접 생성할 수 없음
+- 추상 클래스를 상속받은 자식 클래스는 추상 메소드를 반드시 구현해야 함
+- 일반 메소드, 필드, 생성자도 포함할 수 있음
+- 단일 상속만 가능 (`extends` 키워드 사용)
+
+```java
+public abstract class Animal {
+    protected String name;
+
+    public Animal(String name) {
+        this.name = name;
+    }
+
+    public abstract void makeSound();
+
+    public void eat() {
+        System.out.println(name + "이(가) 먹이를 먹습니다.");
+    }
+}
+
+public class Dog extends Animal {
+    public Dog(String name) {
+        super(name);
+    }
+
+    @Override
+    public void makeSound() {
+        System.out.println(name + "이(가) 짖습니다: 왈왈!");
+    }
+}
+```
+
+## 2. 인터페이스 (Interface)
+
+### 인터페이스란?
+
+- 추상 메소드와 상수만을 포함한 참조 타입
+- `interface` 키워드를 사용하여 정의
+
+### 인터페이스의 특징
+
+- 인스턴스를 직접 생성할 수 없음
+- 다중 상속 가능 (인터페이스 간에 `extends` 키워드 사용)
+- 클래스는 여러 인터페이스를 동시에 구현 가능 (`implements` 키워드 사용)
+- 모든 메소드는 기본적으로 public abstract (생략 가능)
+- 모든 변수는 public static final (생략 가능)
+- 생성자를 가질 수 없음
+
+```java
+public interface Swimmable {
+    void swim();
+}
+
+public interface Flyable {
+    void fly();
+}
+
+// 인터페이스의 다중 상속
+public interface WaterBird extends Swimmable, Flyable {
+    void dive();
+}
+
+// 클래스의 다중 인터페이스 구현
+public class Duck implements Swimmable, Flyable {
+    @Override
+    public void swim() {
+        System.out.println("오리가 수영합니다.");
+    }
+
+    @Override
+    public void fly() {
+        System.out.println("오리가 날아갑니다.");
+    }
+}
+```
+
+## 3. 디폴트 메소드와 정적 메소드
+
+### 디폴트 메소드
+
+- 인터페이스에서 기본 구현을 제공하는 메소드
+- `default` 키워드를 사용하여 정의
+- 구현 클래스에서 오버라이딩 가능
+
+### 정적 메소드
+
+- 인터페이스에서 제공하는 유틸리티 메소드
+- `static` 키워드를 사용하여 정의
+- 인터페이스 이름으로 직접 호출 가능
+
+```java
+public interface Animal {
+    void makeSound();
+
+    default void sleep() {
+        System.out.println("동물이 잠을 잡니다.");
+    }
+
+    static boolean isAlive(Animal animal) {
+        // 동물의 생존 여부를 확인하는 로직
+        return true;
+    }
+}
+```
+
+## 4. 추상 클래스와 인터페이스의 차이
+
+| 특성          | 추상 클래스      | 인터페이스                                  |
+| ------------- | ---------------- | ------------------------------------------- |
+| 인스턴스 생성 | 불가능           | 불가능                                      |
+| 상속          | 단일 상속        | 다중 상속 가능                              |
+| 구현          | -                | 다중 구현 가능                              |
+| 멤버 변수     | 모든 종류 가능   | 상수만 가능 (public static final)           |
+| 메소드        | 추상/일반 메소드 | 추상/디폴트/정적 메소드                     |
+| 생성자        | 가능             | 불가능                                      |
+| 접근 제어자   | 모든 종류 가능   | public (메소드), public static final (변수) |
+
+## 5. 다형성
+
+추상 클래스와 인터페이스 모두 다형성을 구현하는 데 사용될 수 있습니다.
+
+```java
+// 추상 클래스를 이용한 다형성
+public abstract class Shape {
+    public abstract double area();
+}
+
+public class Circle extends Shape {
+    private double radius;
+
+    public Circle(double radius) {
+        this.radius = radius;
+    }
+
+    @Override
+    public double area() {
+        return Math.PI * radius * radius;
+    }
+}
+
+public class Rectangle extends Shape {
+    private double width;
+    private double height;
+
+    public Rectangle(double width, double height) {
+        this.width = width;
+        this.height = height;
+    }
+
+    @Override
+    public double area() {
+        return width * height;
+    }
+}
+
+// 인터페이스를 이용한 다형성
+public interface Playable {
+    void play();
+}
+
+public class Guitar implements Playable {
+    @Override
+    public void play() {
+        System.out.println("기타를 연주합니다.");
+    }
+}
+
+public class Piano implements Playable {
+    @Override
+    public void play() {
+        System.out.println("피아노를 연주합니다.");
+    }
+}
+
+// 사용 예
+Shape circle = new Circle(5);
+Shape rectangle = new Rectangle(4, 6);
+System.out.println("Circle area: " + circle.area());
+System.out.println("Rectangle area: " + rectangle.area());
+
+Playable guitar = new Guitar();
+Playable piano = new Piano();
+guitar.play();
+piano.play();
+```
+
+## 6. 정리
+
+- 추상 클래스와 인터페이스 모두 직접적인 인스턴스 생성이 불가능
+- 추상 클래스는 관련성 높은 클래스들의 공통점을 추상화할 때 사용
+- 인터페이스는 서로 다른 클래스들이 공통으로 구현해야 하는 기능을 정의할 때 사용
+- 추상 클래스는 단일 상속만 가능하지만, 인터페이스는 다중 상속과 다중 구현이 가능
+- 디폴트 메소드와 정적 메소드를 통해 인터페이스에도 구현을 제공할 수 있음
+- 추상 클래스와 인터페이스 모두 다형성을 구현하는 데 사용될 수 있으며, 이는 유연하고 확장 가능한 프로그램 설계에 도움을 줌
+
+## 7. 3주차 숙제 - 계산기 만들기
+
+### 프로그램 요구사항
+
+1. 추상 클래스 `AbstractOperation`을 생성하고, 이를 상속받는 덧셈, 뺄셈, 곱셈, 나눗셈 연산 클래스를 구현합니다.
+2. `Calculator` 클래스를 만들어 연산을 수행합니다.
+3. 사용자로부터 두 개의 정수와 연산자를 입력받아 계산 결과를 출력합니다.
+4. 연산 결과를 소수점 둘째 자리까지 출력합니다.
+5. 나눗셈 시 0으로 나누는 경우 예외 처리를 합니다.
+
+### 주요 구현 포인트
+
+1. 추상 클래스 `AbstractOperation`을 사용하여 연산의 공통 구조를 정의합니다.
+2. `Calculator` 클래스에서 생성자를 통해 연산을 선택하고 수행합니다.
+3. 다형성을 활용하여 각 연산을 처리합니다.
+4. 예외 처리를 통해 프로그램의 안정성을 높입니다.
+
+<details>
+<summary>구현 코드</summary>
+
+### 구현 코드
+
+```java
+abstract class AbstractOperation {
+  abstract double operate(int firstNumber, int secondNumber);
+}
+
+public class AddOperation extends AbstractOperation {
+  @Override
+  double operate(int firstNumber, int secondNumber) {
+    return firstNumber + secondNumber;
+  }
+}
+
+public class SubstractOperation extends AbstractOperation {
+  @Override
+  double operate(int firstNumber, int secondNumber) {
+    return firstNumber - secondNumber;
+  }
+}
+
+public class MultipleOperation extends AbstractOperation {
+  @Override
+  double operate(int firstNumber, int secondNumber) {
+    return firstNumber * secondNumber;
+  }
+}
+
+public class DivideOperation extends AbstractOperation {
+  @Override
+  double operate(int firstNumber, int secondNumber) {
+    return (double) firstNumber / secondNumber;
+  }
+}
+
+public class Calculator {
+  private final AbstractOperation operation;
+
+  public Calculator(String operation) {
+    switch (operation) {
+      case "+":
+        this.operation = new AddOperation();
+        break;
+      case "-":
+        this.operation = new SubstractOperation();
+        break;
+      case "*":
+        this.operation = new MultipleOperation();
+        break;
+      case "/":
+        this.operation = new DivideOperation();
+        break;
+      default:
+        throw new IllegalArgumentException("Invalid operation");
+    }
+  }
+
+  public double calculate(int firstNumber, int secondNumber) {
+    return operation.operate(firstNumber, secondNumber);
+  }
+}
+
+public class Main {
+  public static void main(String[] args) {
+    Scanner scanner = new Scanner(System.in);
+
+    System.out.print("첫 번째 숫자를 입력하세요: ");
+    int a = scanner.nextInt();
+
+    System.out.print("두 번째 숫자를 입력하세요: ");
+    int b = scanner.nextInt();
+
+    System.out.print("연산자를 입력하세요 (+, -, *, /): ");
+    String operator = scanner.next();
+
+    try {
+      Calculator calculator = new Calculator(operator);
+      double result = calculator.calculate(a, b);
+      System.out.printf("계산 결과: %.2f%n", result);
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+    }
+
+    scanner.close();
+  }
+}
+```
+
+> [!NOTE]
+> 이 예제의 코드는 추상 클래스 `AbstractOperation`을 사용하여 다형성을 구현하였습니다.  
+> 다형성을 사용하면 코드의 유연성을 높일 수 있으나, 추상 클래스는 단일 상속의 제한이 있습니다.  
+> 더 유연한 설계를 위해 인터페이스를 사용한 다형성으로 리팩토링할 수 있을 것입니다.  
+> 예를 들어, `AbstractOperation`을 인터페이스로 변경하고 `default` 메소드를 활용하면  
+> 더 유연한 구조를 만들 수 있습니다.
+
+</details>
