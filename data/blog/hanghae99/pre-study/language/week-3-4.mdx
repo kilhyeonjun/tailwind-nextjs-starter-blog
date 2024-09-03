@@ -1,0 +1,185 @@
+---
+title: '항해99 플러스 백엔드 코스 6기 언어 사전 스터디 3주차 (4) - 상속, 오버라이딩, 다형성'
+date: '2024-09-03 17:00:00'
+tags: ['hanghae99', 'Java', 'backend', 'pre-study', 'inheritance', 'overriding', 'polymorphism']
+draft: false
+summary: '항해99 플러스 백엔드 코스 6기 언어 사전 스터디 3주차에서 상속, 오버라이딩, 다형성에 대해 학습한 내용을 정리한다.'
+authors: ['default']
+---
+
+# 항해99 플러스 백엔드 코스 6기 언어 사전 스터디 3주차 - 상속, 오버라이딩, 다형성
+
+## 1. 상속 (Inheritance)
+
+### 상속이란?
+
+- 부모 클래스의 필드와 메소드를 자식 클래스가 물려받는 것
+- 코드의 재사용성을 높이고, 유지보수를 용이하게 함
+
+### 상속의 특징
+
+- 자바는 단일 상속만을 지원
+- 부모 클래스의 생성자와 초기화 블록은 상속되지 않음
+- 부모 클래스의 private 멤버는 상속되지 않음
+- 자식 클래스는 부모 클래스의 protected, public 멤버에 접근 가능
+
+### 상속 관계
+
+- `extends` 키워드를 사용하여 상속 관계를 표현
+- 부모 클래스: `superclass`, `parent class`
+- 자식 클래스: `subclass`, `child class`
+
+```java
+public class Animal {
+    String name;
+
+    public Animal(String name) {
+        this.name = name;
+    }
+
+    public void eat() {
+        System.out.println(name + "이(가) 먹이를 먹습니다.");
+    }
+}
+```
+
+```java
+public class Dog extends Animal {
+    public Dog(String name) {
+        super(name);
+    }
+
+    public void bark() {
+        System.out.println(name + "이(가) 짖습니다.");
+    }
+}
+```
+
+### 클래스간의 관계
+
+- `is-a` 관계: 상속 관계
+- `has-a` 관계: 포함 관계 (합성, 집합)
+
+### 단일 상속과 다중 상속
+
+- 자바는 단일 상속만을 지원
+  - 클래스의 다중 상속은 복잡성을 증가시킬 수 있음
+- 다중 상속을 지원하는 언어: C++, Python 등
+
+### final 클래스와 final 메소드
+
+- `final` 키워드를 사용하여 변경할 수 없는 클래스와 메소드를 정의
+- `final` 클래스: 상속할 수 없는 클래스
+- `final` 메소드: 오버라이딩할 수 없는 메소드
+
+### Object 클래스
+
+- 모든 클래스의 최상위 클래스
+- 모든 클래스는 `Object` 클래스를 상속받음
+- `Object` 클래스의 메소드를 사용할 수 있음
+  - `clone()`, `equals()`, `getClass()`, `hashCode()`, `toString()` 등
+
+## 2. 오버라이딩 (Overriding)
+
+### 오버라이딩이란?
+
+- 부모 클래스의 메소드를 자식 클래스에서 재정의하는 것
+- 부모 클래스의 메소드 시그니처와 일치해야 함
+- `@Override` 어노테이션을 사용하여 오버라이딩을 명시
+- 접근 제어자를 더 좁은 범위로 변경할 수 없음
+- 예외는 부모 클래스의 메소드보다 많이 선언할 수 없음
+
+### super와 super()
+
+- `super`: 부모 클래스의 멤버에 접근할 때 사용
+- `super()`: 부모 클래스의 생성자를 호출할 때 사용
+
+```java
+public class Animal {
+    String name;
+
+    public Animal(String name) {
+        this.name = name;
+    }
+
+    public void eat() {
+        System.out.println(name + "이(가) 먹이를 먹습니다.");
+    }
+}
+```
+
+```java
+public class Dog extends Animal {
+    public Dog(String name) {
+        super(name);
+    }
+
+    @Override
+    public void eat() {
+        super.eat();
+        System.out.println(name + "이(가) 사료를 먹습니다.");
+    }
+}
+```
+
+## 3. 참조 변수의 타입 변환
+
+### 자동 타입 변환 (Upcasting)
+
+- 자식 클래스의 인스턴스를 부모 클래스의 참조 변수로 참조할 수 있음
+- 부모 클래스의 멤버만 접근 가능
+
+```java
+Animal animal = new Dog("멍멍이");
+animal.eat(); // "멍멍이이(가) 먹이를 먹습니다."
+```
+
+### 강제 타입 변환 (Downcasting)
+
+- 부모 클래스의 참조 변수를 자식 클래스의 인스턴스로 변환
+- 자동 타입 변환된 참조 변수를 다시 자식 클래스의 참조 변수로 변환
+
+```java
+Animal animal = new Dog("멍멍이");
+Dog dog = (Dog) animal;
+dog.bark(); // "멍멍이이(가) 짖습니다."
+```
+
+## 4. 다형성 (Polymorphism)
+
+### 다형성이란?
+
+- 같은 타입이지만 실행 결과가 다양한 객체를 참조할 수 있는 성질
+- 부모 클래스의 참조 변수로 자식 클래스의 인스턴스를 참조할 수 있음
+- 메소드 오버라이딩을 통해 다양한 동작을 수행
+
+### 다형성의 장점
+
+- 코드의 유연성을 높임
+- 코드의 가독성을 높임
+- 코드의 확장성을 높임
+
+### instanceof 연산자
+
+- 참조 변수가 참조하는 인스턴스의 실제 타입을 확인
+- `instanceof` 연산자를 사용하여 타입을 확인
+
+```java
+Animal animal = new Dog("멍멍이");
+if (animal instanceof Dog) {
+    Dog dog = (Dog) animal;
+    dog.bark();
+}
+```
+
+## 5. 정리
+
+- 상속은 부모 클래스의 필드와 메소드를 자식 클래스가 물려받는 것
+- 오버라이딩은 부모 클래스의 메소드를 자식 클래스에서 재정의하는 것
+- 다형성은 같은 타입이지만 실행 결과가 다양한 객체를 참조할 수 있는 성질
+- 자바는 단일 상속만을 지원하며, 다중 상속은 지원하지 않음
+- `final` 키워드를 사용하여 변경할 수 없는 클래스와 메소드를 정의할 수 있음
+- `Object` 클래스는 모든 클래스의 최상위 클래스이며, 모든 클래스는 `Object` 클래스를 상속받음
+- 오버라이딩 시 `@Override` 어노테이션을 사용하여 명시
+- 다형성을 통해 코드의 유연성, 가독성, 확장성을 높일 수 있음
+- `instanceof` 연산자를 사용하여 참조 변수의 타입을 확인할 수 있음
