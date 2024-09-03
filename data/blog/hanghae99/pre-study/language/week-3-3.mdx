@@ -1,0 +1,215 @@
+---
+title: '항해99 플러스 백엔드 코스 6기 언어 사전 스터디 3주차 (3) - 접근 제어자'
+date: '2024-09-03 16:00:00'
+tags: ['hanghae99', 'Java', 'backend', 'pre-study', 'access modifier']
+draft: false
+summary: '항해99 플러스 백엔드 코스 6기 언어 사전 스터디 3주차에서 접근 제어자에 대해 학습한 내용을 정리한다.'
+authors: ['default']
+---
+
+# 항해99 플러스 백엔드 코스 6기 언어 사전 스터디 3주차 - 접근 제어자
+
+## 1. 접근 제어자 (Access Modifier)
+
+### 접근 제어자란?
+
+- 클래스, 필드, 메소드, 생성자 등의 접근 범위를 지정하는 키워드
+- 외부에서의 접근을 제한하여 정보 은닉을 구현
+
+### 접근 제어자의 종류
+
+1. `public`
+
+   - 어떤 클래스에서도 접근 가능
+   - 외부 패키지에서도 접근 가능
+
+2. `protected`
+
+   - 같은 패키지 내의 클래스와 상속 관계에 있는 클래스에서 접근 가능
+
+3. `default` (package-private)
+
+   - 같은 패키지 내의 클래스에서만 접근 가능
+   - 접근 제어자를 지정하지 않으면 default로 설정됨
+
+4. `private`
+
+   - 같은 클래스 내에서만 접근 가능
+   - 정보 은닉을 위해 사용
+
+### 사용가능한 접근 제어자의 조합
+
+- 클래스: `public`, `default`
+- 필드, 메소드, 생성자: `public`, `protected`, `default`, `private`
+- 지역 변수: 접근 제어자를 사용할 수 없음
+
+### 생성자의 접근 제어자
+
+- 생성자에 접근 제어자를 지정하여 객체 생성을 제한할 수 있음
+- 주로 싱글톤 패턴 등에서 활용
+
+```java
+public class Singleton {
+    private static Singleton instance;
+
+    private Singleton() {
+        // private 생성자
+    }
+
+    public static Singleton getInstance() {
+        if (instance == null) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+}
+```
+
+### Getter와 Setter
+
+- `private` 필드에 접근하기 위한 메소드
+- 정보 은닉을 유지하면서 필드에 접근할 수 있도록 함
+
+```java
+public class Person {
+    private String name;
+    private int age;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+}
+```
+
+### 사용가능한 제어자의 조합
+
+- 클래스: `public`, `default`, `final`, `abstract`
+- 메소드: `public`, `protected`, `default`, `private`, `final`, `abstract`, `static`
+- 멤버 변수: `public`, `protected`, `default`, `private`, `final`, `static`
+- 지역 변수: `final`
+
+> [!WARNING]
+> 메소드에서 `static`과 `abstract`를 함께 사용할 수 없음  
+> 클래스에서 `final`과 `abstract`를 함께 사용할 수 없음  
+> `abstract` 메소드는 `private`이 될 수 없음  
+> 메소드에서 `private`과 `final`을 함께 사용할 필요는 없음
+
+## 2. 접근 제어자의 실제 사용 사례
+
+### public
+
+1. API 클래스나 인터페이스
+
+   ```java
+   public interface PaymentGateway {
+       boolean processPayment(double amount);
+   }
+   ```
+
+2. 유틸리티 클래스의 public 메소드
+   ```java
+   public class StringUtils {
+       public static String capitalize(String str) {
+           if (str == null || str.isEmpty()) {
+               return str;
+           }
+           return Character.toUpperCase(str.charAt(0)) + str.substring(1);
+       }
+   }
+   ```
+
+### protected
+
+1. 상속을 위한 메소드
+   ```java
+   public abstract class Animal {
+       protected void breathe() {
+           System.out.println("The animal is breathing");
+       }
+   }
+   ```
+
+### default (package-private)
+
+1. 같은 패키지 내에서만 사용되는 헬퍼 클래스
+   ```java
+   // in package com.myapp.helpers
+   class DatabaseHelper {
+       void connect() {
+           // 데이터베이스 연결 로직
+       }
+   }
+   ```
+
+### private
+
+1. 내부 상태를 캡슐화하는 필드
+
+   ```java
+   public class BankAccount {
+       private double balance;
+
+       public void deposit(double amount) {
+           if (amount > 0) {
+               this.balance += amount;
+           }
+       }
+   }
+   ```
+
+## 3. 접근 제어자 사용 시 Best Practices
+
+1. 필드는 가능한 한 private으로 선언
+
+   - 객체의 상태를 보호하고 캡슐화를 유지
+
+2. public 메소드는 신중히 결정
+
+   - 한번 public으로 선언된 메소드는 하위 호환성을 위해 쉽게 변경하기 어려움
+
+3. 인터페이스의 메소드는 항상 public
+
+   - 인터페이스의 목적이 public API를 정의하는 것이므로
+
+4. 상속을 고려한 protected 사용
+
+   - 하위 클래스에서 접근해야 할 메소드나 필드에 사용
+
+5. 패키지 레벨의 접근 제어를 위해 default 활용
+
+   - 같은 패키지 내에서만 사용되는 클래스나 메소드에 적용
+
+6. Getter와 Setter 메소드 사용
+
+   - private 필드에 대한 접근을 제어하고 추가적인 로직을 적용할 수 있음
+
+7. 불필요한 public 메소드 줄이기
+
+   - 클래스의 public API를 최소화하여 유지보수성 향상
+
+8. final 키워드와 함께 사용
+   - 변경되지 않아야 하는 public 상수나 메소드에 적용
+
+## 4. 정리
+
+- 접근 제어자는 클래스, 필드, 메소드, 생성자 등의 접근 범위를 지정하는 키워드
+- public, protected, default, private의 4가지 종류가 있음
+- 정보 은닉을 위해 private 접근 제어자를 사용
+- Getter와 Setter를 통해 private 필드에 접근할 수 있도록 함
+- 생성자에 접근 제어자를 지정하여 객체 생성을 제한할 수 있음
+- 각 접근 제어자의 실제 사용 사례를 통해 적절한 사용 방법을 이해함
+- 접근 제어자 사용 시 Best Practices를 통해 효과적인 코드 설계 방법을 학습함
+- 하위 호환성을 고려하여 public API 설계 시 주의가 필요함
+- 사용 가능한 접근 제어자와 다른 제어자의 조합에 대해 알아봄
