@@ -1,0 +1,145 @@
+---
+title: '항해99 플러스 백엔드 코스 6기 언어 사전 스터디 4주차 (2) - Generic'
+date: '2024-09-10 21:40:00'
+tags: ['hanghae99', 'Java', 'backend', 'pre-study', 'generic']
+draft: false
+summary: '항해99 플러스 백엔드 코스 6기 언어 사전 스터디 4주차에서 제네릭에 대해 학습한 내용을 정리한다.'
+authors: ['default']
+---
+
+# 항해99 플러스 백엔드 코스 6기 언어 사전 스터디 4주차 - Generic
+
+## 1. 제네릭 (Generic)
+
+### 제네릭이란?
+
+- 클래스, 인터페이스, 메소드를 정의할 때 타입을 파라미터로 사용할 수 있도록 하는 기능
+
+```java
+public class Box<T> {
+    private T value;
+
+    public void setValue(T value) {
+        this.value = value;
+    }
+
+    public T getValue() {
+        return value;
+    }
+
+    public static void main(String[] args) {
+        Box<String> box = new Box<>();
+        box.setValue("Hello, World!");
+        System.out.println(box.getValue());
+    }
+}
+```
+
+### 제네릭의 특징
+
+- 타입 안전성: 컴파일 시 타입 체크를 할 수 있어 안정적인 프로그램을 만들 수 있음
+- 타입 변환: 타입 변환을 줄여 성능 향상을 가져올 수 있음
+- 코드 재사용: 다양한 타입에 대해 재사용이 가능함
+
+### 제네릭 용어
+
+```java
+public  class Generic<T> {...}
+
+Generic<String> generic = new Generic<>();
+```
+
+- `Generic<T>`: 제네릭 클래스
+- `T`: 타입 파라미터
+- 타입 파라미터를 생략한 제레릭 클래스 : 원시 타입 (Raw Type)
+
+### 제네릭 제한
+
+- 객체의 static 멤버에는 사용 불가
+
+  ```java
+  static T get() {...} // 에러
+  static void set(T t) {...} // 에러
+  ```
+
+  - 타입 변수는 인스턴스 변수로 간주되고, 모든 객체에 동일하게 동작해야 하는 static 멤버에 사용할 수 없음
+
+- 제네릭 배열 생성 불가
+
+  ```java
+  T[] arr = new T[10]; // 에러
+  ```
+
+  - 컴파일 시점에 타입이 지워지기 때문에 배열을 생성할 수 없음
+
+### 제네릭 문법
+
+- 다수의 타입 변수를 사용할 수 있음
+
+  ```java
+  public class Generic<T, U, E> {
+    public E multiTypeMethod(T t, U u) { ... }
+  }
+
+  Generic<String, Integer, Double> generic = new Generic<>();
+  generic.multiTypeMethod("Hello", 1);
+  ```
+
+- 다향성 즉 상속과 타입의 관계는 그대로 적용
+
+  ```java
+  public class Box<T> {
+    private T value;
+
+    public void setValue(T value) {
+        this.value = value;
+    }
+
+    public T getValue() {
+        return value;
+    }
+  }
+
+  public class ChildBox<T> extends Box<T> { ... }
+  ```
+
+- 와일드카드를 통해 제네릭의 제한을 구체적으로 정할 수 있음
+
+  ```java
+  public void printList(List<?> list) {
+    for (Object obj : list) {
+        System.out.println(obj);
+    }
+  }
+  ```
+
+  - `<?>`: 모든 타입을 허용
+  - `<? extends T>`: T 타입의 하위 타입만 허용
+  - `<? super T>`: T 타입의 상위 타입만 허용
+
+- 메소드를 슼코프로 제네릭을 별도로 선언 가능
+
+  ```java
+  public  static <T extends Comparable<? super T>> void sort(List<T> list) { ... }
+
+  static <T> void sort(List<T> list, Comparator<? super T> c) { ... }
+  ```
+
+  - 반환 타입 앞에 제네릭을 선언하면 메소드 스코프로 제네릭을 별도로 선언할 수 있음
+  - 타입 변수를 클래스 내부의 인스턴스 변수 취급하기 때문에 제네릭 메소드의 타입 변수는 static 메소드에 사용할 수 있음
+  - 같은 이름의 변수를 사용했다고 해도 제네릭 메소드의 타입 변수는 제네릭 클래스의 타입 변수와 다름
+
+  ```java
+  public class Generic<T, U, E> {
+    // Generic<T,U,E> 의 T와 아래의 T는 이름만 같을뿐 다른 변수
+    static <T> void sort(List<T> list, Comparator<? super T> c) { ... }
+  }
+  ```
+
+## 2. 정리
+
+- 제네릭은 클래스, 인터페이스, 메소드를 정의할 때 타입을 파라미터로 사용할 수 있도록 하는 기능
+- 제네릭을 사용하면 타입 안전성, 타입 변환을 줄여 성능 향상, 코드 재사용이 가능함
+- 제네릭의 제한으로 객체의 static 멤버에는 사용 불가, 제네릭 배열 생성 불가
+- 다수의 타입 변수를 사용할 수 있으며, 상속과 타입의 관계는 그대로 적용됨
+- 와일드카드를 통해 제네릭의 제한을 구체적으로 정할 수 있으며, 메소드를 스코프로 제네릭을 별도로 선언 가능
